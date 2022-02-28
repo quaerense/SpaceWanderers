@@ -1,7 +1,9 @@
 package org.quaerense.spacewanderers.data.network
 
 import org.quaerense.spacewanderers.data.network.model.MainObjectDto
+import org.quaerense.spacewanderers.data.network.model.NearEarthObjectDto
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
@@ -11,6 +13,12 @@ interface ApiService {
         @Query(PARAM_API_KEY) apiKey: String = API_KEY,
         @Query(PARAM_PAGE) page: Int
     ): MainObjectDto
+
+    @GET("{id}")
+    suspend fun getAsteroid(
+        @Path("id") id: Int,
+        @Query(PARAM_API_KEY) apiKey: String = API_KEY
+    ): NearEarthObjectDto
 
     companion object {
 
