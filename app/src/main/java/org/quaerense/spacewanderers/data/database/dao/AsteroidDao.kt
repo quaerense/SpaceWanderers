@@ -10,33 +10,13 @@ import org.quaerense.spacewanderers.data.database.model.CloseApproachDataDbModel
 
 @Dao
 abstract class AsteroidDao {
-
-    fun insertAsteroidWithCloseApproachData(
-        asteroid: AsteroidDbModel,
-        closeApproachData: List<CloseApproachDataDbModel>
-    ) {
-
-        for (data in closeApproachData) {
-            data.asteroidId = asteroid.id
-        }
-
-        insertAsteroid(asteroid)
-        insertCloseApproachData(closeApproachData)
-    }
-
     @Insert
-    abstract fun insertAsteroid(asteroid: AsteroidDbModel)
-
-    @Insert
-    abstract fun insertCloseApproachData(closeApproachData: List<CloseApproachDataDbModel>)
-
-    @Query("DELETE FROM asteroid")
-    abstract fun deleteAllFromAsteroid()
-
-    @Query("DELETE FROM close_approach_data")
-    abstract fun deleteAllFromCloseApproachData()
+    abstract suspend fun insert(asteroid: AsteroidDbModel)
 
     @Transaction
     @Query("SELECT * FROM asteroid")
-    abstract fun getAsteroidWithCloseApproachData(): List<AsteroidWithCloseApproachData>
+    abstract suspend fun getAsteroids(): List<AsteroidWithCloseApproachData>
+
+    @Query("DELETE FROM asteroid")
+    abstract suspend fun deleteAll()
 }

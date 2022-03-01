@@ -5,17 +5,19 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import org.quaerense.spacewanderers.data.database.dao.AsteroidDao
+import org.quaerense.spacewanderers.data.database.dao.CloseApproachDataDao
 import org.quaerense.spacewanderers.data.database.model.AsteroidDbModel
 import org.quaerense.spacewanderers.data.database.model.CloseApproachDataDbModel
 
 @Database(
     entities = [AsteroidDbModel::class, CloseApproachDataDbModel::class],
-    version = 2,
+    version = 4,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun asteroidDao(): AsteroidDao
+    abstract fun closeApproachDataDao(): CloseApproachDataDao
 
     companion object {
 

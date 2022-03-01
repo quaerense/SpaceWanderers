@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class NearEarthObjectDto(
     @SerializedName("id")
     @Expose
-    var id: String? = null,
+    var id: String,
 
     @SerializedName("neo_reference_id")
     @Expose
@@ -42,7 +42,7 @@ data class NearEarthObjectDto(
 
     @SerializedName("close_approach_data")
     @Expose
-    var closeApproachData: List<CloseApproachDataDto>? = null,
+    var closeApproachData: List<CloseApproachDataDto>,
 
     @SerializedName("orbital_data")
     @Expose
