@@ -2,6 +2,11 @@ package org.quaerense.spacewanderers.data.database.mapper
 
 import org.quaerense.spacewanderers.data.database.model.CloseApproachDataDbModel
 import org.quaerense.spacewanderers.data.network.model.CloseApproachDataDto
+import org.quaerense.spacewanderers.domain.entity.CloseApproachData
+import java.sql.Date
+import java.sql.Timestamp
+import java.text.SimpleDateFormat
+import java.util.*
 
 class CloseApproachDataMapper {
 
@@ -11,33 +16,61 @@ class CloseApproachDataMapper {
     ): List<CloseApproachDataDbModel> {
         val dbModels = mutableListOf<CloseApproachDataDbModel>()
 
-        for (dto in closeApproachDataDto) {
+        for (dto in closeApproachDataDto) with(dto) {
             dbModels.add(
                 CloseApproachDataDbModel(
                     asteroidId = asteroidId,
-                    epochDateCloseApproach = dto.epochDateCloseApproach,
+                    epochDateCloseApproach = epochDateCloseApproach,
                     relativeVelocityInKilometersPerSecond =
-                    dto.relativeVelocity?.kilometersPerSecond?.toDouble()
+                    relativeVelocity?.kilometersPerSecond?.toDouble()
                         ?: UNDEFINED_RELATIVE_VELOCITY,
                     relativeVelocityInKilometersPerHour =
-                    dto.relativeVelocity?.kilometersPerHour?.toDouble()
+                    relativeVelocity?.kilometersPerHour?.toDouble()
                         ?: UNDEFINED_RELATIVE_VELOCITY,
                     relativeVelocityInMilesPerHour =
-                    dto.relativeVelocity?.milesPerHour?.toDouble() ?: UNDEFINED_RELATIVE_VELOCITY,
+                    relativeVelocity?.milesPerHour?.toDouble() ?: UNDEFINED_RELATIVE_VELOCITY,
                     missDistanceInAstronomical =
-                    dto.missDistance?.astronomical?.toDouble() ?: UNDEFINED_MISS_DISTANCE,
+                    missDistance?.astronomical?.toDouble() ?: UNDEFINED_MISS_DISTANCE,
                     missDistanceInLunar =
-                    dto.missDistance?.lunar?.toDouble() ?: UNDEFINED_MISS_DISTANCE,
+                    missDistance?.lunar?.toDouble() ?: UNDEFINED_MISS_DISTANCE,
                     missDistanceInKilometers =
-                    dto.missDistance?.kilometers?.toDouble() ?: UNDEFINED_MISS_DISTANCE,
+                    missDistance?.kilometers?.toDouble() ?: UNDEFINED_MISS_DISTANCE,
                     missDistanceInMiles =
-                    dto.missDistance?.astronomical?.toDouble() ?: UNDEFINED_MISS_DISTANCE,
-                    orbitingBody = dto.orbitingBody
+                    missDistance?.astronomical?.toDouble() ?: UNDEFINED_MISS_DISTANCE,
+                    orbitingBody = orbitingBody
                 )
             )
         }
 
         return dbModels
+    }
+
+    fun mapListDbModelToEntity(dbModel: List<CloseApproachDataDbModel>): List<CloseApproachData> {
+        //TODO Add distance unit int parameters
+        val entities = mutableListOf<CloseApproachData>()
+        for (model in dbModel) {
+            entities.add(
+                CloseApproachData(
+                    closeApproachDate = convertTimestampToTime(model.epochDateCloseApproach),
+                    relativeVelocity = model.relativeVelocityInKilometersPerHour.toString(),
+                    missDistance = model.missDistanceInKilometers.toString(),
+                    orbitingBody = model.orbitingBody
+                )
+            )
+        }
+
+        return entities
+    }
+
+    private fun convertTimestampToTime(timestamp: Long?): String {
+        if (timestamp == null) return ""
+        val stamp = Timestamp(timestamp * 1000)
+        val date = Date(stamp.time)
+        val pattern = "HH:mm:ss"
+        val sdf = SimpleDateFormat(pattern, Locale.getDefault())
+        sdf.timeZone = TimeZone.getDefault()
+
+        return sdf.format(date)
     }
 
     companion object {
