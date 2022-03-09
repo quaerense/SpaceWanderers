@@ -6,22 +6,10 @@ import androidx.room.Query
 import org.quaerense.spacewanderers.data.database.model.CloseApproachDataDbModel
 
 @Dao
-abstract class CloseApproachDataDao {
-
-    suspend fun insert(
-        asteroidId: Long,
-        closeApproachData: List<CloseApproachDataDbModel>
-    ) {
-        for (closeApproach in closeApproachData) {
-            closeApproach.asteroidId = asteroidId
-        }
-
-        insert(closeApproachData)
-    }
-
+interface CloseApproachDataDao {
     @Insert
-    abstract suspend fun insert(closeApproachData: List<CloseApproachDataDbModel>)
+    suspend fun insert(closeApproachData: List<CloseApproachDataDbModel>)
 
     @Query("DELETE FROM close_approach_data")
-    abstract suspend fun deleteAll()
+    suspend fun deleteAll()
 }

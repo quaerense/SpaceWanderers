@@ -1,22 +1,26 @@
 package org.quaerense.spacewanderers.data.database.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
 import org.quaerense.spacewanderers.data.database.model.AsteroidDbModel
 import org.quaerense.spacewanderers.data.database.model.AsteroidWithCloseApproachData
-import org.quaerense.spacewanderers.data.database.model.CloseApproachDataDbModel
 
 @Dao
-abstract class AsteroidDao {
+interface AsteroidDao {
     @Insert
-    abstract suspend fun insert(asteroid: AsteroidDbModel)
+    suspend fun insert(asteroid: AsteroidDbModel)
 
     @Transaction
     @Query("SELECT * FROM asteroid")
-    abstract suspend fun getAsteroids(): List<AsteroidWithCloseApproachData>
+    fun getAll(): LiveData<List<AsteroidWithCloseApproachData>>
+
+    @Transaction
+    @Query("SELECT * FROM asteroid WHERE id = :id")
+    fun get(id: Int): LiveData<AsteroidWithCloseApproachData>
 
     @Query("DELETE FROM asteroid")
-    abstract suspend fun deleteAll()
+    suspend fun deleteAll()
 }

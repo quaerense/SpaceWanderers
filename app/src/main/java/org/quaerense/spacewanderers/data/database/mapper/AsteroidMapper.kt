@@ -11,7 +11,7 @@ class AsteroidMapper {
         AsteroidDbModel(
             id = id.toLong(),
             name = name,
-            absoluteMagnitudeH = absoluteMagnitudeH,
+            absoluteMagnitudeH = absoluteMagnitudeH ?: UNDEFINED_MAGNITUDE,
             estimatedDiameterInKilometersMin =
             estimatedDiameter?.kilometers?.estimatedDiameterMin ?: UNDEFINED_DIAMETER,
             estimatedDiameterInKilometersMax =
@@ -61,6 +61,7 @@ class AsteroidMapper {
     companion object {
 
         private const val UNDEFINED_DIAMETER = -1.0
+        private const val UNDEFINED_MAGNITUDE = -1.0
         private const val UNDEFINED_IS_POTENTIALLY_HAZARDOUS_ASTEROID = "Unknown"
     }
 }
