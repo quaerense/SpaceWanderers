@@ -10,6 +10,6 @@ data class MainObjectDto(
 
     @SerializedName("near_earth_objects")
     @Expose
-    var nearEarthObjects: List<NearEarthObjectDto>? = null
+    var asteroids: List<AsteroidDto>? = null
 
 )

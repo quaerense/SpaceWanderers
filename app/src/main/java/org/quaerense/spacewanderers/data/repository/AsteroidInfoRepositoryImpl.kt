@@ -47,6 +47,4 @@ class AsteroidInfoRepositoryImpl(private val application: Application) : Asteroi
             DownloadDataWorker.makeRequest()
         )
     }
-
-
 }

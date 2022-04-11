@@ -1,13 +1,13 @@
 package org.quaerense.spacewanderers.data.database.mapper
 
 import org.quaerense.spacewanderers.data.database.model.AsteroidDbModel
-import org.quaerense.spacewanderers.data.network.model.NearEarthObjectDto
+import org.quaerense.spacewanderers.data.network.model.AsteroidDto
 import org.quaerense.spacewanderers.domain.entity.Asteroid
 import org.quaerense.spacewanderers.domain.entity.CloseApproachData
 
 class AsteroidMapper {
 
-    fun mapNearEarthObjectDtoToAsteroidDbModel(dto: NearEarthObjectDto) = with(dto) {
+    fun mapNearEarthObjectDtoToAsteroidDbModel(dto: AsteroidDto) = with(dto) {
         AsteroidDbModel(
             id = id.toLong(),
             name = name,

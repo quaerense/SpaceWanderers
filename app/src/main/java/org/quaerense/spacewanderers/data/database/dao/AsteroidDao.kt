@@ -1,16 +1,13 @@
 package org.quaerense.spacewanderers.data.database.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Transaction
+import androidx.room.*
 import org.quaerense.spacewanderers.data.database.model.AsteroidDbModel
 import org.quaerense.spacewanderers.data.database.model.AsteroidWithCloseApproachData
 
 @Dao
 interface AsteroidDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(asteroid: AsteroidDbModel)
 
     @Transaction
