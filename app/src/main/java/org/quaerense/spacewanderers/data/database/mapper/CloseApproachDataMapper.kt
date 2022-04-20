@@ -11,7 +11,7 @@ import java.util.*
 class CloseApproachDataMapper {
 
     fun mapListDtoToListDbModel(
-        asteroidId: Long,
+        asteroidId: String,
         closeApproachDataDto: List<CloseApproachDataDto>
     ): List<CloseApproachDataDbModel> {
         val dbModels = mutableListOf<CloseApproachDataDbModel>()

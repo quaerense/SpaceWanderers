@@ -3,7 +3,9 @@ package org.quaerense.spacewanderers.data.repository
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import org.quaerense.spacewanderers.data.DownloadDataWorker
 import org.quaerense.spacewanderers.data.database.AppDatabase
@@ -11,6 +13,7 @@ import org.quaerense.spacewanderers.data.database.mapper.AsteroidMapper
 import org.quaerense.spacewanderers.data.database.mapper.CloseApproachDataMapper
 import org.quaerense.spacewanderers.domain.AsteroidInfoRepository
 import org.quaerense.spacewanderers.domain.entity.Asteroid
+import java.util.concurrent.TimeUnit
 
 class AsteroidInfoRepositoryImpl(private val application: Application) : AsteroidInfoRepository {
     private val database = AppDatabase.getInstance(application)
@@ -41,9 +44,9 @@ class AsteroidInfoRepositoryImpl(private val application: Application) : Asteroi
 
     override fun loadData() {
         val workManager = WorkManager.getInstance(application)
-        workManager.enqueueUniqueWork(
+        workManager.enqueueUniquePeriodicWork(
             DownloadDataWorker.NAME,
-            ExistingWorkPolicy.REPLACE,
+            ExistingPeriodicWorkPolicy.REPLACE,
             DownloadDataWorker.makeRequest()
         )
     }

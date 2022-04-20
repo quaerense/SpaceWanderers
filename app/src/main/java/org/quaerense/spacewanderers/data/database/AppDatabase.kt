@@ -11,7 +11,7 @@ import org.quaerense.spacewanderers.data.database.model.CloseApproachDataDbModel
 
 @Database(
     entities = [AsteroidDbModel::class, CloseApproachDataDbModel::class],
-    version = 5,
+    version = 6,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

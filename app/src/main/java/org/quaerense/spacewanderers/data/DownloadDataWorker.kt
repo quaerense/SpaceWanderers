@@ -7,11 +7,15 @@ import org.quaerense.spacewanderers.data.database.AppDatabase
 import org.quaerense.spacewanderers.data.database.mapper.AsteroidMapper
 import org.quaerense.spacewanderers.data.database.mapper.CloseApproachDataMapper
 import org.quaerense.spacewanderers.data.network.ApiFactory
+import retrofit2.HttpException
+import java.util.concurrent.TimeUnit
+import javax.net.ssl.SSLProtocolException
 
 class DownloadDataWorker(
     context: Context,
     workerParameters: WorkerParameters
 ) : CoroutineWorker(context, workerParameters) {
+
     private val database = AppDatabase.getInstance(context)
     private val asteroidDao = database.asteroidDao()
     private val closeApproachDataDao = database.closeApproachDataDao()
@@ -22,14 +26,21 @@ class DownloadDataWorker(
 
     override suspend fun doWork(): Result {
         val startPage = preferenceManager.getInt(START_PAGE, UNDEFINED_PAGE)
+        var currentPage = startPage
         val totalPages =
             apiService.getAllAsteroids(page = UNDEFINED_PAGE).page?.totalPages ?: UNDEFINED_PAGE
-        for (page in startPage..totalPages) {
+        while (currentPage < totalPages) {
             try {
-                downloadData(page)
+                downloadData(currentPage)
+                currentPage++
             } catch (e: Exception) {
                 e.printStackTrace()
-                Result.retry()
+                if (e is SSLProtocolException) {
+                    return Result.retry()
+                }
+                if (e is HttpException && e.code() == 329) {
+                    return Result.failure()
+                }
             }
         }
 
@@ -60,15 +71,15 @@ class DownloadDataWorker(
         private const val START_PAGE = "start page"
         private const val UNDEFINED_PAGE = 0
 
-        fun makeRequest(): OneTimeWorkRequest {
-            return OneTimeWorkRequestBuilder<DownloadDataWorker>()
+        fun makeRequest(): PeriodicWorkRequest {
+            return PeriodicWorkRequestBuilder<DownloadDataWorker>(1, TimeUnit.HOURS)
                 .setConstraints(makeConstraints())
+                .setBackoffCriteria(BackoffPolicy.LINEAR, 10, TimeUnit.SECONDS)
                 .build()
         }
 
         private fun makeConstraints(): Constraints {
             return Constraints.Builder()
-                .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
         }
     }

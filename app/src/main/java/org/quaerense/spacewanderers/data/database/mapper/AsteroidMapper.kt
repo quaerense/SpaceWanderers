@@ -9,7 +9,7 @@ class AsteroidMapper {
 
     fun mapNearEarthObjectDtoToAsteroidDbModel(dto: AsteroidDto) = with(dto) {
         AsteroidDbModel(
-            id = id.toLong(),
+            id = id,
             name = name,
             absoluteMagnitudeH = absoluteMagnitudeH ?: UNDEFINED_MAGNITUDE,
             estimatedDiameterInKilometersMin =

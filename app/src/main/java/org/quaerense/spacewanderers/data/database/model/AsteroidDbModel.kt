@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "asteroid")
 data class AsteroidDbModel(
-    @PrimaryKey val id: Long,
+    @PrimaryKey val id: String,
     val name: String?,
     val absoluteMagnitudeH: Double?,
     val estimatedDiameterInKilometersMin: Double?,

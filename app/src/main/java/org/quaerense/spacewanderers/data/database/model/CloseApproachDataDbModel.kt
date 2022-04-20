@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "close_approach_data")
 data class CloseApproachDataDbModel(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    var asteroidId: Long,
+    var asteroidId: String,
     val epochDateCloseApproach: Long?,
     val relativeVelocityInKilometersPerSecond: Double?,
     val relativeVelocityInKilometersPerHour: Double?,
