@@ -71,8 +71,8 @@ class DownloadDataWorker(
         private const val START_PAGE = "start page"
         private const val UNDEFINED_PAGE = 0
 
-        fun makeRequest(): PeriodicWorkRequest {
-            return PeriodicWorkRequestBuilder<DownloadDataWorker>(1, TimeUnit.HOURS)
+        fun makeRequest(): OneTimeWorkRequest {
+            return OneTimeWorkRequestBuilder<DownloadDataWorker>()
                 .setConstraints(makeConstraints())
                 .setBackoffCriteria(BackoffPolicy.LINEAR, 10, TimeUnit.SECONDS)
                 .build()

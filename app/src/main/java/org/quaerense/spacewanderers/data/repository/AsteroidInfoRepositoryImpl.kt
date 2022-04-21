@@ -44,9 +44,9 @@ class AsteroidInfoRepositoryImpl(private val application: Application) : Asteroi
 
     override fun loadData() {
         val workManager = WorkManager.getInstance(application)
-        workManager.enqueueUniquePeriodicWork(
+        workManager.enqueueUniqueWork(
             DownloadDataWorker.NAME,
-            ExistingPeriodicWorkPolicy.REPLACE,
+            ExistingWorkPolicy.REPLACE,
             DownloadDataWorker.makeRequest()
         )
     }
