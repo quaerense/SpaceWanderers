@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Space Wanderers</string>
+    <string name="download">Download</string>
+    <string name="download_progress">%d / %d</string>
 </resources>

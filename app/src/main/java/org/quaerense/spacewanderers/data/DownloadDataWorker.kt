@@ -7,7 +7,6 @@ import org.quaerense.spacewanderers.data.database.AppDatabase
 import org.quaerense.spacewanderers.data.database.mapper.AsteroidMapper
 import org.quaerense.spacewanderers.data.database.mapper.CloseApproachDataMapper
 import org.quaerense.spacewanderers.data.network.ApiFactory
-import retrofit2.HttpException
 import java.util.concurrent.TimeUnit
 import javax.net.ssl.SSLProtocolException
 
@@ -27,8 +26,15 @@ class DownloadDataWorker(
     override suspend fun doWork(): Result {
         val startPage = preferenceManager.getInt(START_PAGE, UNDEFINED_PAGE)
         var currentPage = startPage
-        val totalPages =
-            apiService.getAllAsteroids(page = UNDEFINED_PAGE).page?.totalPages ?: UNDEFINED_PAGE
+        val totalPages: Int
+        try {
+            totalPages =
+                apiService.getAllAsteroids(page = UNDEFINED_PAGE).page?.totalPages ?: UNDEFINED_PAGE
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return Result.failure()
+        }
+
         while (currentPage < totalPages) {
             try {
                 downloadData(currentPage)
@@ -38,9 +44,8 @@ class DownloadDataWorker(
                 if (e is SSLProtocolException) {
                     return Result.retry()
                 }
-                if (e is HttpException && e.code() == 329) {
-                    return Result.failure()
-                }
+
+                return Result.failure()
             }
         }
 
@@ -48,8 +53,7 @@ class DownloadDataWorker(
     }
 
     private suspend fun downloadData(page: Int) {
-        val nearEarthObjectDto =
-            apiService.getAllAsteroids(page = page).asteroids ?: listOf()
+        val nearEarthObjectDto = apiService.getAllAsteroids(page = page).asteroids ?: listOf()
         for (dto in nearEarthObjectDto) {
             val asteroidDbModel =
                 asteroidMapper.mapNearEarthObjectDtoToAsteroidDbModel(dto)
