@@ -12,11 +12,11 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:text="@string/download_progress"
-        app:layout_constraintBottom_toTopOf="@id/pbDownload"
+        app:layout_constraintBottom_toTopOf="@id/pbDownloadProgress"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ProgressBar
-        android:id="@+id/pbDownload"
+        android:id="@+id/pbDownloadProgress"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,7 +30,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:text="@string/download"
+        android:text="@string/download_start"
+        android:backgroundTint="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

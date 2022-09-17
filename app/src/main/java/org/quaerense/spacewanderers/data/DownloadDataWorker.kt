@@ -38,12 +38,17 @@ class DownloadDataWorker(
         while (currentPage < totalPages) {
             try {
                 downloadData(currentPage)
+                val percent = currentPage * 100 / totalPages
+                setProgress(workDataOf(DOWNLOAD_PERCENT to percent))
+                preferenceManager.edit().putInt(DOWNLOAD_PERCENT, percent).apply()
                 currentPage++
             } catch (e: Exception) {
                 e.printStackTrace()
+
                 if (e is SSLProtocolException) {
                     return Result.retry()
                 }
+
 
                 return Result.failure()
             }
@@ -72,7 +77,8 @@ class DownloadDataWorker(
     companion object {
 
         const val NAME = "DownloadDataWorker"
-        private const val START_PAGE = "start page"
+        const val DOWNLOAD_PERCENT = "DownloadPercent"
+        private const val START_PAGE = "StartPage"
         private const val UNDEFINED_PAGE = 0
 
         fun makeRequest(): OneTimeWorkRequest {
