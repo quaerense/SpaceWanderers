@@ -49,7 +49,6 @@ class DownloadDataWorker(
                     return Result.retry()
                 }
 
-
                 return Result.failure()
             }
         }
@@ -60,8 +59,7 @@ class DownloadDataWorker(
     private suspend fun downloadData(page: Int) {
         val nearEarthObjectDto = apiService.getAllAsteroids(page = page).asteroids ?: listOf()
         for (dto in nearEarthObjectDto) {
-            val asteroidDbModel =
-                asteroidMapper.mapNearEarthObjectDtoToAsteroidDbModel(dto)
+            val asteroidDbModel = asteroidMapper.mapNearEarthObjectDtoToAsteroidDbModel(dto)
             val closeApproachDataDbModel = closeApproachDataMapper.mapListDtoToListDbModel(
                 asteroidDbModel.id,
                 dto.closeApproachData

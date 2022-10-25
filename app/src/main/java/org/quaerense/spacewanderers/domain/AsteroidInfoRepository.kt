@@ -3,18 +3,19 @@ package org.quaerense.spacewanderers.domain
 import androidx.lifecycle.LiveData
 import org.quaerense.spacewanderers.domain.entity.Asteroid
 import org.quaerense.spacewanderers.domain.state.DownloadState
+import org.quaerense.spacewanderers.domain.usecase.GetAsteroidListUseCase.Companion.LIMIT
 
 interface AsteroidInfoRepository {
 
-    fun getAsteroidInfoList(): LiveData<List<Asteroid>>
+    suspend fun getAsteroidInfoList(limit: Int = LIMIT, offset: Int): List<Asteroid>
 
-    fun getAsteroidInfo(id: Int): LiveData<Asteroid>
-
-    fun getDownloadState(): LiveData<DownloadState>
+    suspend fun getAsteroidInfo(id: Int): Asteroid
 
     fun loadData()
 
     fun stopDownload()
 
     fun getLastDownloadedPercent(): Int
+
+    fun getDownloadState(): LiveData<DownloadState>
 }

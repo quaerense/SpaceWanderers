@@ -1,5 +1,6 @@
 package org.quaerense.spacewanderers.presentation.fragment
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,6 +24,7 @@ class StartFragment : Fragment() {
         ViewModelProvider(this)[StartViewModel::class.java]
     }
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -40,8 +42,8 @@ class StartFragment : Fragment() {
             tvDownloadProgress.text = downloadPercent.toPercent()
             pbDownloadProgress.progress = downloadPercent
 
-            viewModel.downloadProgress().observe(viewLifecycleOwner) { downloadState ->
-                parseState(downloadState)
+            viewModel.downloadState().observe(viewLifecycleOwner) {
+                parseState(it)
             }
         }
     }
@@ -90,13 +92,23 @@ class StartFragment : Fragment() {
                 }
                 is Succeeded -> {
                     with(bDownload) {
-                        isClickable = false
-                        setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.grey))
+                        isClickable = true
+                        setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.green))
                         text = requireContext().getString(R.string.download_succeeded)
+                        setOnClickListener {
+                            requireActivity().supportFragmentManager.beginTransaction()
+                                .replace(R.id.main_container, AsteroidListFragment.newInstance())
+                                .commit()
+                        }
                     }
                     pbDownloadProgress.progress = 100
+                    pbDownloadProgress.progressTintList = ColorStateList.valueOf(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.green
+                        )
+                    )
                     tvDownloadProgress.text = 100.toPercent()
-                    Toast.makeText(context, "Succeeded", Toast.LENGTH_SHORT).show()
                 }
             }
         }

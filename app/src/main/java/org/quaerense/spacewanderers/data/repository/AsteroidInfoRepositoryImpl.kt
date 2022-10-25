@@ -26,24 +26,42 @@ class AsteroidInfoRepositoryImpl(private val application: Application) : Asteroi
     private val closeApproachDataMapper = CloseApproachDataMapper()
 
 
-    override fun getAsteroidInfoList(): LiveData<List<Asteroid>> {
-        return Transformations.map(asteroidDao.getAll()) { asteroidWithCloseApproachDataList ->
-            asteroidWithCloseApproachDataList.map { asteroidWithCloseApproachData ->
-                asteroidMapper.mapDbModelToEntity(
-                    asteroidWithCloseApproachData.asteroid,
-                    closeApproachDataMapper.mapListDbModelToEntity(asteroidWithCloseApproachData.closeApproachData)
-                )
-            }
+    override suspend fun getAsteroidInfoList(limit: Int, offset: Int): List<Asteroid> {
+        val asteroidWithCloseApproachDataList = asteroidDao.getList(limit, offset)
+
+        return asteroidWithCloseApproachDataList.map { asteroidWithCloseApproachData ->
+            asteroidMapper.mapDbModelToEntity(
+                asteroidWithCloseApproachData.asteroid,
+                closeApproachDataMapper.mapListDbModelToEntity(asteroidWithCloseApproachData.closeApproachData)
+            )
         }
     }
 
-    override fun getAsteroidInfo(id: Int): LiveData<Asteroid> {
-        return Transformations.map(asteroidDao.get(id)) {
-            asteroidMapper.mapDbModelToEntity(
-                it.asteroid,
-                closeApproachDataMapper.mapListDbModelToEntity(it.closeApproachData)
+    override suspend fun getAsteroidInfo(id: Int): Asteroid {
+        val asteroidWithCloseApproachData = asteroidDao.get(id)
+
+        return asteroidMapper.mapDbModelToEntity(
+            asteroidWithCloseApproachData.asteroid,
+            closeApproachDataMapper.mapListDbModelToEntity(asteroidWithCloseApproachData.closeApproachData)
+        )
+    }
+
+    override fun loadData() {
+        WorkManager.getInstance(application).apply {
+            enqueueUniqueWork(
+                DownloadDataWorker.NAME,
+                ExistingWorkPolicy.REPLACE,
+                DownloadDataWorker.makeRequest()
             )
         }
+    }
+
+    override fun stopDownload() {
+        WorkManager.getInstance(application).cancelAllWork()
+    }
+
+    override fun getLastDownloadedPercent(): Int {
+        return preferenceManager.getInt(DOWNLOAD_PERCENT, 0)
     }
 
     override fun getDownloadState(): LiveData<DownloadState> {
@@ -71,23 +89,5 @@ class AsteroidInfoRepositoryImpl(private val application: Application) : Asteroi
 
             state
         }
-    }
-
-    override fun loadData() {
-        WorkManager.getInstance(application).apply {
-            enqueueUniqueWork(
-                DownloadDataWorker.NAME,
-                ExistingWorkPolicy.REPLACE,
-                DownloadDataWorker.makeRequest()
-            )
-        }
-    }
-
-    override fun stopDownload() {
-        WorkManager.getInstance(application).cancelAllWork()
-    }
-
-    override fun getLastDownloadedPercent(): Int {
-        return preferenceManager.getInt(DOWNLOAD_PERCENT, 0)
     }
 }

@@ -5,4 +5,5 @@
     <string name="download_restarting">Download is restarting…</string>
     <string name="download_succeeded">Completed</string>
     <string name="download_progress">%d / %d</string>
+    <string name="label_absolute_magnitude">Absolute magnitude:</string>
 </resources>
